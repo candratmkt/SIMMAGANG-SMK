@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Siswa - SIMMAGANG</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fw-bold" href="#"><i class="fa-solid fa-user-graduate me-2"></i>SIMMAGANG - Portal Siswa</a>
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-white small d-none d-md-inline" id="userGreeting">Halo, <strong id="userName">User</strong></span>
+                <button class="btn btn-light btn-sm fw-semibold rounded-pill" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket me-1"></i> Keluar</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4 px-4">
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm p-4 bg-white rounded-4">
+                    <h4 class="fw-bold text-dark mb-1">Selamat Datang di Dashboard Siswa</h4>
+                    <p class="text-muted small">Kelola dan pantau seluruh aktivitas PKL secara terpadu di portal ini.</p>
+                </div>
+            </div>
+
+            <!-- Metric Cards -->
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm p-3 bg-white rounded-3 border-start border-4 border-primary">
+                    <span class="text-muted small fw-semibold">Status Portal</span>
+                    <h3 class="fw-bold mb-0 text-primary">Aktif</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm p-3 bg-white rounded-3 border-start border-4 border-success">
+                    <span class="text-muted small fw-semibold">Modul Terintegrasi</span>
+                    <h3 class="fw-bold mb-0 text-success">10 Modul</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm p-3 bg-white rounded-3 border-start border-4 border-warning">
+                    <span class="text-muted small fw-semibold">Database Supabase</span>
+                    <h3 class="fw-bold mb-0 text-warning">Terkoneksi</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm p-3 bg-white rounded-3 border-start border-4 border-info">
+                    <span class="text-muted small fw-semibold">Role Teridentifikasi</span>
+                    <h3 class="fw-bold mb-0 text-info">Siswa</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { getCurrentUser, logoutUser } from '../../assets/js/auth.js';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = getCurrentUser();
+            if (!user) {
+                window.location.href = '../../login.html';
+                return;
+            }
+            document.getElementById('userName').textContent = user.full_name || user.email;
+        });
+
+        window.handleLogout = () => logoutUser();
+    </script>
+</body>
+</html>

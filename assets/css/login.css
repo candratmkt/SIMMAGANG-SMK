@@ -1,0 +1,13 @@
+/* Login Screen Styles */
+.login-body {
+    background: linear-gradient(135deg, #eef2f3 0%, #8e9eab 100%);
+}
+
+.glass-card {
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #0d6efd 0%, #032b69 100%);
+}
