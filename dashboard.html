@@ -64,7 +64,8 @@
     <!-- Navbar Top -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="#"><i class="fa-solid fa-graduation-cap me-2"></i>SIMMAGANG</a>
+            <!-- Logo Brand dengan Ikon Helm Safety -->
+            <a class="navbar-brand" href="#"><i class="fa-solid fa-helmet-safety me-2"></i>SIMMAGANG</a>
             <div class="d-flex align-items-center gap-3">
                 <span class="text-white d-none d-md-inline">
                     <i class="fa-regular fa-circle-user me-1"></i> <span id="navUserName">...</span>
@@ -184,7 +185,6 @@
     
     <script>
         // 1. Konfigurasi Client Supabase
-        // GANTI DENGAN URL DAN ANON KEY SUPABASE PROYEK ANDA
         const SUPABASE_URL = 'YOUR_SUPABASE_URL';
         const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
         
@@ -197,7 +197,6 @@
                 const { data: { session }, error: sessionErr } = await supabase.auth.getSession();
 
                 if (sessionErr || !session) {
-                    // Jika tidak ada sesi login, kembalikan ke login.html
                     window.location.href = 'login.html';
                     return;
                 }
