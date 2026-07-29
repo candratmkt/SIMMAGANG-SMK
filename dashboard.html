@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SIMMAGANG-SMK</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body {
+            background-color: #f4f6f9;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: #1e293b;
+        }
+        .sidebar .nav-link {
+            color: #94a3b8;
+            padding: 12px 20px;
+            margin: 4px 10px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: #fff;
+            background: #2563eb;
+        }
+        .main-content {
+            padding: 30px;
+        }
+        .card-stat {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Overlay Loader saat memuat data -->
+    <div id="pageLoader" class="position-fixed w-100 h-100 bg-white d-flex align-items-center justify-content-center" style="z-index: 9999;">
+        <div class="text-center">
+            <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+            <p class="text-muted small mb-0">Memuat data pengguna...</p>
+        </div>
+    </div>
+
+    <div class="d-flex">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white" style="width: 260px;">
+            <a href="#" class="d-flex align-items-center mb-4 me-md-auto text-white text-decoration-none px-3">
+                <i class="fa-solid fa-graduation-cap fa-2x text-warning me-2"></i>
+                <span class="fs-5 fw-bold">SIMMAGANG</span>
+            </a>
+            <hr class="border-secondary">
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link active">
+                        <i class="fa-solid fa-house me-2"></i> Beranda / UTAMA
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="fa-solid fa-location-dot me-2"></i> Presensi GPS
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="fa-solid fa-book-open me-2"></i> Jurnal Harian
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="fa-solid fa-building me-2"></i> Tempat PKL
+                    </a>
+                </li>
+            </ul>
+            <hr class="border-secondary">
+            <div class="px-3">
+                <button id="btnLogout" class="btn btn-outline-danger w-100 text-start rounded-3">
+                    <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar (Logout)
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content flex-grow-1">
+            <!-- Top Navbar -->
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom bg-white p-3 rounded-3 shadow-sm">
+                <div>
+                    <h5 class="fw-bold mb-0 text-dark">Selamat Datang di SIMMAGANG</h5>
+                    <small class="text-muted">Portal Sistem Informasi Manajemen PKL</small>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-end">
+                        <div class="fw-bold text-dark" id="userNameHeader">Memuat...</div>
+                        <span class="badge bg-primary rounded-pill text-uppercase" id="userRoleBadge">-</span>
+                    </div>
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;" id="userAvatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Welcome Banner -->
+            <div class="card card-stat bg-primary text-white p-4 mb-4 shadow-sm" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="fw-bold mb-2">Halo, <span id="welcomeName">Pengguna</span>! 👋</h3>
+                        <p class="mb-0 text-white-50">Sistem siap digunakan. Pastikan Anda melakukan presensi harian dan mengisi jurnal kegiatan PKL secara berkala.</p>
+                    </div>
+                    <div class="col-md-4 text-center d-none d-md-block">
+                        <i class="fa-solid fa-user-graduate fa-5x text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Grid -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card card-stat p-3 bg-white">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success text-white rounded-3 p-3 me-3">
+                                <i class="fa-solid fa-calendar-check fa-2x"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block fw-semibold">Status Presensi Hari Ini</small>
+                                <span class="fw-bold fs-5 text-success" id="statPresensi">Sudah Absen</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-stat p-3 bg-white">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-info text-white rounded-3 p-3 me-3">
+                                <i class="fa-solid fa-book-journal-whills fa-2x"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block fw-semibold">Total Jurnal Dibuat</small>
+                                <span class="fw-bold fs-5 text-dark" id="statJurnal">0 Entri</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-stat p-3 bg-white">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-warning text-white rounded-3 p-3 me-3">
+                                <i class="fa-solid fa-building-user fa-2x"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block fw-semibold">Lokasi Penempatan</small>
+                                <span class="fw-bold fs-6 text-dark d-block text-truncate" style="max-width: 180px;" id="statLokasi">PT. Industri Demo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Info Card -->
+            <div class="card card-stat bg-white p-4">
+                <h5 class="fw-bold mb-3 text-dark border-bottom pb-2"><i class="fa-solid fa-address-card me-2 text-primary"></i> Detail Akun Pengguna</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">Nama Lengkap</label>
+                        <p class="fw-bold text-dark mb-0" id="infoNama">-</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">Email Autentikasi</label>
+                        <p class="fw-bold text-dark mb-0" id="infoEmail">-</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">Peran (Role)</label>
+                        <p class="fw-bold text-dark mb-0 text-capitalize" id="infoRole">-</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">User ID (Supabase Auth)</label>
+                        <p class="fw-mono text-muted small mb-0 text-truncate" id="infoUUID">-</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Supabase Session Guard & Profile Loader -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        const SUPABASE_URL = 'https://pqhnzcsmbytwiurchnzl.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxaG56Y3NtYnl0d2l1cmNobnpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMjQ2NzIsImV4cCI6MjEwMDgwMDY3Mn0.B5nv0C75tqK0kdD7pB7NxXZGn8CWZz7HgR9mECyrLXE';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function checkAuthAndLoadProfile() {
+            try {
+                // 1. Cek Sesi Login Actif
+                const { data: { session }, error: sessionErr } = await supabase.auth.getSession();
+
+                if (sessionErr || !session) {
+                    console.warn("⚠️ Tidak ada sesi aktif. Mengalihkan ke login...");
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const user = session.user;
+
+                // 2. Ambil data profil dari tabel profiles
+                const { data: profile, error: profileErr } = await supabase
+                    .from('profiles')
+                    .select('nama_lengkap, role')
+                    .eq('id', user.id)
+                    .maybeSingle();
+
+                const namaLengkap = profile?.nama_lengkap || user.email.split('@')[0];
+                const roleUser = profile?.role || 'User';
+
+                // 3. Tampilkan data ke UI Dashboard
+                document.getElementById('userNameHeader').innerText = namaLengkap;
+                document.getElementById('welcomeName').innerText = namaLengkap;
+                document.getElementById('userRoleBadge').innerText = roleUser;
+                document.getElementById('infoNama').innerText = namaLengkap;
+                document.getElementById('infoEmail').innerText = user.email;
+                document.getElementById('infoRole').innerText = roleUser;
+                document.getElementById('infoUUID').innerText = user.id;
+
+            } catch (err) {
+                console.error("Error Dashboard:", err);
+            } finally {
+                // Sembunyikan Loader
+                const loader = document.getElementById('pageLoader');
+                if (loader) {
+                    loader.classList.add('d-none');
+                }
+            }
+        }
+
+        // Jalankan Pengecekan Sesi saat Halaman Dimuat
+        document.addEventListener('DOMContentLoaded', checkAuthAndLoadProfile);
+
+        // Handler Tombol Logout
+        const logoutBtn = document.getElementById('btnLogout');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                if (confirm('Apakah Anda yakin ingin keluar?')) {
+                    await supabase.auth.signOut();
+                    window.location.href = 'login.html';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
