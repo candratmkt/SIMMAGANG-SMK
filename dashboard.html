@@ -64,7 +64,7 @@
     <!-- Navbar Top -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
-            <!-- Logo Brand dengan Ikon Helm Safety -->
+            <!-- Logo Brand Helm Safety -->
             <a class="navbar-brand" href="#"><i class="fa-solid fa-helmet-safety me-2"></i>SIMMAGANG</a>
             <div class="d-flex align-items-center gap-3">
                 <span class="text-white d-none d-md-inline">
@@ -184,17 +184,30 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
-        // 1. Konfigurasi Client Supabase
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        // 1. Konfigurasi Client Supabase (Kredensial Resmi Anda)
+        const SUPABASE_URL = 'https://pqhnzcsmbytwiurchnzl.supabase.co/';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxaG56Y3NtYnl0d2l1cmNobnpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMjQ2NzIsImV4cCI6MjEwMDgwMDY3Mn0.B5nv0C75tqK0kdD7pB7NxXZGn8CWZz7HgR9mECyrLXE';
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let supabaseClient;
+        
+        try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (err) {
+            console.error("Gagal menginisialisasi Supabase:", err);
+        }
 
         // 2. Fungsi Validasi Sesi & Muat Data Profil
         async function loadDashboard() {
+            const loader = document.getElementById('loaderOverlay');
+            
             try {
+                if (!supabaseClient) {
+                    alert("Gagal terhubung ke server Supabase!");
+                    return;
+                }
+
                 // Cek apakah user sedang login
-                const { data: { session }, error: sessionErr } = await supabase.auth.getSession();
+                const { data: { session }, error: sessionErr } = await supabaseClient.auth.getSession();
 
                 if (sessionErr || !session) {
                     window.location.href = 'login.html';
@@ -204,7 +217,7 @@
                 const user = session.user;
 
                 // Ambil data detail profil dari tabel public.profiles
-                const { data: profile, error: profileErr } = await supabase
+                const { data: profile, error: profileErr } = await supabaseClient
                     .from('profiles')
                     .select('full_name, role, email, is_active')
                     .eq('id', user.id)
@@ -231,17 +244,19 @@
                 document.getElementById('infoUUID').innerText = user.id;
 
             } catch (err) {
-                console.error("Terjadi kesalahan:", err);
+                console.error("Terjadi kesalahan saat memuat dashboard:", err);
             } finally {
-                // Sembunyikan layar pemuat (loader)
-                document.getElementById('loaderOverlay').style.display = 'none';
+                // Sembunyikan pemuat (loader)
+                if (loader) {
+                    loader.style.display = 'none';
+                }
             }
         }
 
         // 3. Fungsi Logout
         async function handleLogout() {
             if (confirm("Apakah Anda yakin ingin keluar dari sistem SIMMAGANG?")) {
-                await supabase.auth.signOut();
+                await supabaseClient.auth.signOut();
                 window.location.href = 'login.html';
             }
         }
