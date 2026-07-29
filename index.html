@@ -56,7 +56,7 @@
                             <i class="fa-solid fa-location-dot fa-xl"></i>
                         </div>
                         <h5 class="fw-bold">Presensi GPS + Kamera</h5>
-                        <p class="text-muted small">Absensi siswa tervalidasi dengan lokasi radius radius industri dan verifikasi swafoto otomatis.</p>
+                        <p class="text-muted small">Absensi siswa tervalidasi dengan lokasi radius industri dan verifikasi swafoto otomatis.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -88,5 +88,28 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Integration: Supabase Connection Test Script -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        const SUPABASE_URL = 'https://pqhnzcsmbytwiurchnzl.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxaG56Y3NtYnl0d2l1cmNobnpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMjQ2NzIsImV4cCI6MjEwMDgwMDY3Mn0.B5nv0C75tqK0kdD7pB7NxXZGn8CWZz7HgR9mECyrLXE';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        (async () => {
+            console.log("🔄 [INDEX] Sedang menguji koneksi ke Supabase...");
+            try {
+                const { data, error } = await supabase.from('settings').select('key').limit(1);
+                if (error) {
+                    console.warn("⚠️ [INDEX] Terhubung tapi respon error (cek RLS/Tabel):", error.message);
+                } else {
+                    console.log("🟢 [INDEX] BERHASIL! Landing page terhubung ke Supabase.");
+                }
+            } catch (err) {
+                console.error("🔴 [INDEX] KONEKSI GAGAL:", err);
+            }
+        })();
+    </script>
 </body>
 </html>
